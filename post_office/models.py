@@ -168,6 +168,10 @@ class Email(models.Model):
             if not commit:
                 raise
 
+        connection = connections[self.backend_alias or 'default']
+        if connection and disconnect_after_delivery:
+            connection.close()
+
         if commit:
             self.status = status
             self.save(update_fields=['status'])
